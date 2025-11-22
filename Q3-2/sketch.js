@@ -2,8 +2,9 @@
 let x, y;
 let vx, vy;
 const g = 1;
+const vyMax = 20;
 
-function setup(){
+function setup() {
   createCanvas(windowWidth, windowHeight);
   x = width / 2;
   y = height / 2;
@@ -11,11 +12,11 @@ function setup(){
   vy = 0;
 }
 
-function windowResized(){
+function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-function draw(){
+function draw() {
   background(160, 192, 255);
   const size = height * 0.1; // キャラクターのサイズ
 
@@ -25,9 +26,24 @@ function draw(){
   rect(0, groundY, width, height - groundY);
 
   // BLANK[1] キャラクターの左右移動
+  if (keyIsDown(LEFT_ARROW)) {
+    x -= 5;
+    if (keyIsDown(SHIFT)) { x -= 10; } // スペースキーも文字キーと同 様
+  }
+  if (keyIsDown(RIGHT_ARROW)) {
+    x += 5;
+    if (keyIsDown(SHIFT)) { x += 10; } // 文字キーの場合
+  }
+
 
   // BLANK[2] 重力とジャンプ
-
+  x += vx;
+  y += vy;
+  vy += g; // 重力は「速度の変化量」
+  vy = constrain(vy, -vyMax, vyMax); // 速度が大きくなりすぎないように調整
+  if (x < 0 || x > width) { vx = -1 * vx; }
+  x = constrain(x, 0, width);
+  y = constrain(y, 0, height* 0.8 - size / 1.4  );
   // 速くなりすぎないように制限
   vx = constrain(vx, -20, 20);
   vy = constrain(vy, -20, 20);
@@ -39,4 +55,12 @@ function draw(){
   // キャラクターを描く
   fill(0);
   ellipse(x, y, size, size);
+}
+ //if(y = height * 0.8 - size / 2)
+function keyPressed() {
+  if (key == " ") {
+     if (y == constrain(y,height * 0.758,height * 0.8)) {
+      vy = -1 * vy;
+     }
+   } 
 }
